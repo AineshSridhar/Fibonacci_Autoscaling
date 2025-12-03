@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-fib-deploy
+spec: 
+  replicas: 2
+  selector:
+    matchLabels:
+      app: go-fib
+  template:
+    metadata:
+      labels:
+        app: go-fib
+    spec:
+      containers:
+        - name: go-fib
+          image: go-fib-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet: 
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe: 
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5

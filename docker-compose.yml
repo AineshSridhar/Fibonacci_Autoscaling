@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  go-fib-service:
+    build: .
+    container_name: go-fib-service
+    ports:
+      - "3030:8080"
+    networks:
+      - sre-net
+    
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes: 
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - sre-net
+    
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks: 
+      - sre-net
+
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+    networks:
+      - sre-net
+
+networks:
+  sre-net:
+    driver: bridge

@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 5s
+
+rule_files:
+  - "alert.rules.yml"
+
+scrape_configs:
+  - job_name: 'go-fib-service'
+    static_configs:
+      - targets: ['go-fib-service:8080']

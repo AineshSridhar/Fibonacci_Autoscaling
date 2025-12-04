@@ -12,8 +12,7 @@ pipeline{
 
         stage('Build Go Binary'){
             steps{
-                sh 'go mod tidy'
-                sh 'go build -o fibservice'
+                sh 'go build -mod=vendor -o fibservice'
             }
         }
         

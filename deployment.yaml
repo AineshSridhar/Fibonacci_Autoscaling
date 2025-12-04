@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: go-fib
-          image: go-fib-service:latest
-          imagePullPolicy: Never
+          image: aineshsridhar/go-fib-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           livenessProbe:

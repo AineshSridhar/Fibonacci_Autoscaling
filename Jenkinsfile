@@ -23,13 +23,14 @@ pipeline{
             }
         }
 
-        stage('Docker Build'){
+        stage('Docker Build & Push'){
             steps{
-                sh '''
-                    eval $(minikube -p minikube docker-env)
-                    docker build -t ${IMAGE_NAME} .'
-                '''
-            }
+                withCredentials([usernamePassword(credentialsId: 'docker-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]){
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'docker build -t ${IMAGE_NAME} .'
+                    sh 'docker push ${IMAGE_NAME}'
+                }
+            } 
         }
 
         stage('Deploy to Kubernetes') {

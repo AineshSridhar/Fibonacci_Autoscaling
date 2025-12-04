@@ -3,6 +3,7 @@ pipeline{
 
     environment{
         IMAGE_NAME = "aineshsridhar/go-fib-service:latest"
+        KUBECONFIG = "/var/lib/jenkins/.kube/config"
     }
 
     stages{
@@ -36,9 +37,9 @@ pipeline{
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
-                sh 'kubectl apply -f hpa.yaml'
+                sh 'kubectl apply --validate=false -f deployment.yaml'
+                sh 'kubectl apply --validate=false -f service.yaml'
+                sh 'kubectl apply --validate=false -f hpa.yaml'
             }
         }
 

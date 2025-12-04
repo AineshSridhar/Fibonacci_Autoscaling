@@ -25,13 +25,10 @@ pipeline{
 
         stage('Docker Build'){
             steps{
-                sh 'docker build -t ${IMAGE_NAME} .'
-            }
-        }
-
-        stage('Push to Registry'){
-            steps{
-                sh 'docker push ${IMAGE_NAME}'
+                sh '''
+                    eval $(minikube -p minikube docker-env)
+                    docker build -t ${IMAGE_NAME} .'
+                '''
             }
         }
 

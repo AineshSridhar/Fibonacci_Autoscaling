@@ -1,6 +1,10 @@
 pipeline{
     agent any
 
+    environment{
+        IMAGE_NAME = "aineshsridhar/go-fib-service:latest"
+    }
+
     stages{
         stage('Checkout'){
             steps{checkout scm}
@@ -12,36 +16,36 @@ pipeline{
                 sh 'go build -o fibservice'
             }
         }
-
-        stage('Docker Build'){
-            steps{
-                sh 'docker build -t go-fib-service .'
-            }
-        }
-
+        
         stage('Run Unit Tests'){
             steps{
                 sh 'go test ./...'
             }
         }
 
-        stage('Push to Registry'){
+        stage('Docker Build'){
             steps{
-                sh 'docker tag go-fib-service aineshsridhar/go-fib-service:latest'
-                sh 'docker push aineshsridhar/go-fib-service:latest'
+                sh 'docker build -t ${IMAGE_NAME} .'
             }
         }
 
-        stage('Deploy'){
+        stage('Push to Registry'){
             steps{
-                sh 'docker-compose down'
-                sh 'docker-compose up -d'
+                sh 'docker push ${IMAGE_NAME}'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
+                sh 'kubectl apply -f hpa.yaml'
             }
         }
 
         stage('Health Check'){
             steps{
-                sh 'curl -f http://localhost:8080/health'
+                sh 'kubectl rollout status deployment/go-fib-deploy'
             }
         }
     }

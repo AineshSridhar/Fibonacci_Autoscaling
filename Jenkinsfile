@@ -13,7 +13,7 @@ pipeline{
 
         stage('Build Go Binary'){
             steps{
-                sh 'go build -mod=vendor -o fibservice'
+                sh 'go build -mod=vendor -o fib-service'
             }
         }
         
@@ -29,6 +29,7 @@ pipeline{
                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                     sh 'docker build -t ${IMAGE_NAME} .'
                     sh 'docker push ${IMAGE_NAME}'
+                    sh 'docker system prune -f'
                 }
             } 
         }

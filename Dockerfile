@@ -13,12 +13,12 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o fib-service
 
 FROM gcr.io/distroless/base-debian12
 
-WORKDIR /
+WORKDIR /app
 
-COPY --from=builder /app/fib-service .
+COPY --from=builder /app/fib-service /app/
 
 USER 65532:65532
 
 EXPOSE 8080
 
-ENTRYPOINT ["/fib-service"]
+ENTRYPOINT ["/app/fib-service"]

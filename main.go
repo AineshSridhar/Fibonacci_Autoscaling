@@ -7,6 +7,8 @@ import (
 
 	"go-fib-service/handlers"
 	"go-fib-service/metrics"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -18,7 +20,7 @@ func main() {
 		w.Write([]byte("OK"))
 	})
 
-	mux.Handle("/metrics", metrics.Handler())
+	mux.Handle("/metrics", promhttp.Handler())
 
 	finalHandler := metrics.Middleware(mux)
 
